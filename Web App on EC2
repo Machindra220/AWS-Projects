@@ -1,0 +1,82 @@
+**Python Website Hosting on AWS EC2 Linux Instance. **
+Hosting a Python web app on an AWS Linux instance is a great way to get hands-on with cloud infrastructure. Let’s break it down into two parts: the **deployment steps** and a **simple architecture diagram** 🧱🐍
+
+---
+
+## 🚀 Steps to Host a Python Web App on AWS EC2 (Linux)
+
+### 🔧 1. Launch an EC2 Instance
+- Go to AWS Console → EC2 → Launch Instance
+- Choose **Amazon Linux 2** or **Ubuntu**
+- Select instance type (e.g., t2.micro for Free Tier)
+- Configure security group to allow **HTTP (port 80)** and **SSH (port 22)**
+
+### 🐍 2. Set Up the Server
+SSH into your instance:
+```bash
+ssh -i your-key.pem ec2-user@your-ec2-public-ip
+```
+
+Install Python, pip, and a web server:
+```bash
+sudo yum update -y
+sudo yum install python3 -y
+sudo pip3 install flask gunicorn
+```
+
+Upload your app (via Git or SCP), e.g.:
+```python
+# app.py
+from flask import Flask
+app = Flask(__name__)
+
+@app.route('/')
+def hello():
+    return "Hello from AWS EC2!"
+
+if __name__ == '__main__':
+    app.run()
+```
+
+Run the app with Gunicorn:
+```bash
+gunicorn -w 4 -b 0.0.0.0:80 app:app
+```
+
+### 🌐 3. Access Your App
+- Visit `http://<your-ec2-public-ip>` in your browser
+- You should see your Flask app running!
+
+---
+
+## 🗺️ Architecture Diagram Overview
+
+Here’s a simple layout of the architecture:
+
+```
++---------------------+
+|     User Browser    |
++---------+-----------+
+          |
+          v
++---------------------+
+|   AWS EC2 Instance  |
+|---------------------|
+| - Linux OS          |
+| - Python + Flask    |
+| - Gunicorn Server   |
++---------------------+
+          |
+          v
++---------------------+
+|     Security Group  |
+| - Allows HTTP/SSH   |
++---------------------+
+```
+
+Optional additions:
+- **Amazon RDS** for database
+- **S3** for static file storage
+- **CloudWatch** for monitoring
+
+---
